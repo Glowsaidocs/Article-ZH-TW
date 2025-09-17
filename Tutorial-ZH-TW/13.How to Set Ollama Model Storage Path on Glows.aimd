@@ -1,0 +1,88 @@
+---
+id: set_ollama_model_path
+title: 'How to Set Ollama Model Storage Path on Glows.ai'
+date: '2025-09-14 11:00'
+description: 'Step-by-step guide to configuring Ollama model storage on Glows.ai instances, ensuring models are stored in /datadrive for efficient snapshot and reuse.'
+tags:
+  - Tutorial
+---
+
+# 如何在 Glows.ai 上設置 Ollama 模型存儲路徑
+
+本教學將示範如何在 **Glows.ai** 實例中，將 **Ollama 模型存儲路徑**設置為 `/datadrive/ollama`。
+
+Snapshot 會保存實例中除了 `/datadrive` 目錄以外的所有改動。如果將模型文件存放在實例本地硬碟內，會導致 **Snapshot 體積過大**，下次啟動時需要較長時間拉取，影響使用體驗。
+為了獲得更順暢的操作體驗，建議將 **模型、數據與程式碼** 等文件統一存放在 `/datadrive` 目錄中，而 Snapshot 僅保留與環境相關的修改（如 `pip`/`apt` 安裝的套件）。
+
+---
+
+## 設置 Ollama 模型存儲路徑
+
+在開始操作前，請確認在建立實例時已勾選 **Mount**，將您的 `Datadrive` 掛載到實例。
+
+![image-20250906115435105](../tutorials-images/Ollama/01.png)
+
+實例建立完成後，進入實例介面的 **HTTP 8888 Port（JupyterLab 服務）**，依照下圖新建一個 **Terminal**。
+
+![image-20250906110026201](../tutorials-images/Ollama/02.png)
+
+在 Terminal 中依序輸入以下指令，操作步驟如下：
+
+1. 停止正在運行的 Ollama 服務
+2. 設置 Ollama 模型存儲路徑至 `/datadrive/ollama`
+3. 重新啟動 Ollama 服務
+
+```bash
+pkill -f ollama
+export OLLAMA_HOST=0.0.0.0
+export OLLAMA_MODELS=/datadrive/ollama
+nohup ollama serve > ollama.log 2>&1 &
+```
+
+![image-20250906110430019](../tutorials-images/Ollama/03.png)
+
+完成設定並重新啟動後，之後執行 `ollama pull` 下載的模型，將自動存放在 `/datadrive/ollama` 目錄下。這樣即使不建立 Snapshot，下次只要掛載 Datadrive，就能直接使用先前下載的模型。
+
+![image-20250906110704574](../tutorials-images/Ollama/04.png)
+
+---
+
+## 在啟動項中自動設置 Ollama 模型路徑
+
+若希望下次建立實例時無需再手動設置，可以直接在 **Glows.ai 實例啟動文件**中加入環境變量。
+
+Glows.ai 啟動文件位於：`/usr/bin/glows_init.sh`。
+為方便編輯，我們可先在 Terminal 中建立連結至 `/root/glows_init.sh`：
+
+```bash
+ln -sf /usr/bin/glows_init.sh /root/glows_init.sh
+```
+
+接著，在 JupyterLab 左側導航欄進入 **root 目錄**，雙擊打開 `glows_init.sh` 文件，在 **Ollama 啟動之前** 加入以下內容：
+
+```bash
+export OLLAMA_MODELS=/datadrive/ollama
+```
+
+修改完成後，記得使用 **Ctrl + S** 保存。
+
+![image-20250906114655391](../tutorials-images/Ollama/05.png)
+
+完成設定後即可製作 Snapshot。
+點擊實例介面中的 **Take Snapshot**，輸入 Snapshot 名稱。若不再需要當前實例，可勾選 **Snapshot 完成後釋放實例**選項。
+
+![image-20250908180754775](../tutorials-images/Ollama/06.png)
+
+此後，若從該 Snapshot 啟動新實例，Ollama 模型將自動存放於 `/datadrive/ollama`，無需重複設定。
+
+---
+
+## 聯絡我們
+
+如果你在使用 Glows.ai 過程中有任何問題或建議，歡迎透過 Email、Discord 或 Line 與我們聯絡。
+
+**Glows.ai Email:** support@glows.ai
+
+**Discord:** https://discord.com/invite/glowsai
+
+**Line:** https://lin.ee/fHcoDgG
