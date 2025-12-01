@@ -1,0 +1,83 @@
+本教程將詳細介紹如何在 Glows.ai 上下載 HuggingFace 模型，分為兩種方法：本地下載上傳（儲存在 Glows.ai Datadrive）和創建實例下載（儲存在 Glows.ai 實例）。
+
+- 儲存在 Glows.ai Datadrive ：永久儲存，下載速度受本地網路速度影響，適合下載數據是需要多次使用的用戶（例如：做模型服務）。
+
+- 儲存在 Glows.ai 實例：實例運行中有效，釋放後數據會被清除，實例所在機房共享頻寬，下載速度快，適合下載數據是單次使用的用戶（例如：測試模型效果）。
+
+## 本地下載上傳
+
+本方法會將數據儲存到 Glows.ai Datadrive ，需要用戶先在Glows.ai平台購買合適大小的 Storage，然後將Storage分配給對應區域 Datadrive。
+
+### 開通 Storage
+
+假設您要下載模型大小是65GB，需要使用 TW-03 區 NVIDIA GeForce RTX 4090 顯卡，那麼您需要先前往 [Storage Space](https://platform.glows.ai/space) 購買一個 100GB 儲存套餐。
+
+![image-20251125180753151](../img/01.png)
+
+然後點擊 Storage Space 介面中的 Modify 按鈕，分配 70GB 空間給 TW-03 區域 Datadrive。
+
+![image-20251125181002653](../img/02.png)
+
+### Data drive 客戶端下載模型
+
+目前 Data drive 客戶端支持從 HuggingFace 直接下載模型儲存到對應區域Datadrive 中，其原理是：使用本地網路，將 HuggingFace 分塊下載到本地，然後同步上傳到 Datadrive。
+
+- 安裝Data drive 客戶端：[點擊下載](https://glows.ai/datadrive)
+
+- 參考教程步驟：[從 HuggingFace 下載模型](https://docs.glows.ai/zh-TW/docs/datadrive-app#%E6%AD%A5%E9%A9%9F-4%E4%B8%8A%E5%82%B3%E6%88%96%E5%8C%AF%E5%85%A5%E6%AA%94%E6%A1%88%E8%B3%87%E6%96%99%E5%A4%BE)
+
+## 創建實例下載
+
+### 創建實例
+
+本方法需要您在 Glows.ai 上按需創建一個實例，假設您要使用的是 TW-03 區域的  NVIDIA GeForce RTX 4090 顯卡，環境選擇為 CUDA12.8 Torch2.8.0 Base。
+
+![image-20251125120458313](../img/03.png)
+
+實例創建成功後，您可以選擇 SSH 鏈接實例，或者訪問 HTTP Port 8888(JupyterLab) 鏈接。
+
+![image-20251125121244598](../img/04.png)
+
+### 指令下載模型
+
+JupyterLab 使用簡單，以下示範為 JupyterLab 下操作，新建一個Terminal。
+
+![image-20251125121423526](../img/05.png)
+
+然後輸入以下指令安裝 HuggingFace 官方模型管理工具 huggingface_hub。
+
+```bash
+pip install -U huggingface_hub
+```
+
+![image-20251125121510970](../img/06.png)
+
+安裝完成後，就可以使用 hf 指令下載模型文件到實例了，比如下載 `openai/gpt-oss-20b` 到 `/gpt-oss-20b`目錄下，指令如下：
+
+```bash
+hf download openai/gpt-oss-20b --local-dir /gpt-oss-20b
+```
+
+![image-20251125122005123](../img/07.png)
+
+## Glows.ai 運行 HuggingFace 模型
+
+目前有一些框架支持直接加載運行  HuggingFace 模型，比如 Transformers、SGLang、GPUStack等，您可以選擇自己熟悉的軟件進行部署操作，也可以參考以下教程：
+
+[How to run DeepSeek-R1 on multiple machines with multiple GPUs using SGLang on Glows.ai](https://glows.ai/article/deepseek_r1_using_sglang)
+
+[How to Run GPUStack on Glows.ai](https://glows.ai/article/run_gpustack_on_glowsai)
+
+另外 HuggingFace 官網也會給出一些使用案例，您 Glows.ai 實作過程中，有任何疑問或建議，可以隨時通過[聯繫我們](#聯繫我們)中分享的渠道聯繫我們。
+
+![image-20251126140029352](../img/08.png)
+
+## 聯繫我們
+
+如果您在使用 Glows.ai 的過程中有任何疑問或者建議，歡迎通過郵件、Discord或者Line聯繫我們。
+
+Glows.ai Email Address: **support@glows.ai**
+
+Discord: https://discord.com/invite/Glows.ai
+
+Line link: https:/lin.ee/fHcoDgG
